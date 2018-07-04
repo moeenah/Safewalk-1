@@ -14,26 +14,13 @@ export default class PedMap extends Component {
     super(props);
     this.state = {
       pixel: 1,
-      region: {
-        latitude: this.props.lat,
-        longitude: this.props.long,
-        latitudeDelta: 0.0422,
-        longitudeDelta: 0.0121
-      },
-      coordinate: {
-        latitude: this.props.lat,
-        longitude: this.props.long
-      },
       page: this.props.page,
-      lat: this.props.lat,
-      long: this.props.long,
       error: null
     };
   }
 
   _onPressButton() {
     this.props.changePage(0);
-    console.log(this.props.page);
   }
 
   static defaultProps = {
@@ -54,6 +41,7 @@ export default class PedMap extends Component {
 
   componentWillUnmount() {}
 
+
   render() {
     const containerstyle = {
       height: "100%",
@@ -72,7 +60,12 @@ export default class PedMap extends Component {
           style={styles.map}
           showsUserLocation={true}
           showsMyLocationButton={true}
-          region={this.state.region}
+          region={{
+            latitude: this.props.lat,
+            longitude: this.props.long,
+            latitudeDelta: 0.0422,
+            longitudeDelta: 0.0121
+          }}
           customMapStyle={mapStyle}
         >
           {Coords.map(marker => (
