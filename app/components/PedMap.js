@@ -43,11 +43,6 @@ moveto(){
   this.map.animateToRegion(this.state.region)
 }
 
-// updateMap(){
-//   this.setState
-//   this.map.animateToRegion(this.state.region)
-// }
-
   componentDidMount() {
     setTimeout(()=>this.setState({pixel: 0}),500)
   }
