@@ -5,7 +5,7 @@ import Main from "./app/components/Main";
 import Coords from "./sample";
 var Sound = require("react-native-sound");
 
-Sound.setCategory("Playback");
+Sound.setCategory("Playback", true);
 
 var alarm = new Sound("alarm.mp3", Sound.MAIN_BUNDLE, error => {
   if (error) {
@@ -94,6 +94,7 @@ export default class Safewalk extends Component<Props> {
         });
         Vibration.vibrate(5000)
       }
+
     });
   }
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>added function above
