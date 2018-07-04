@@ -7,13 +7,13 @@ import {
   View
 } from "react-native";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import Marker from "./Marker";
+import Coords from "../../sample";
 
 export default class PedMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pixel:1,
+      pixel: 1,
       region: {
         latitude: this.props.lat,
         longitude: this.props.long,
@@ -39,12 +39,17 @@ export default class PedMap extends Component {
   static defaultProps = {
     message: "Hi there"
   };
-moveto(){
-  this.map.animateToRegion(this.state.region)
-}
+  moveto() {
+    this.map.animateToRegion(this.state.region);
+  }
+
+  // updateMap(){
+  //   this.setState
+  //   this.map.animateToRegion(this.state.region)
+  // }
 
   componentDidMount() {
-    setTimeout(()=>this.setState({pixel: 0}),500)
+    setTimeout(() => this.setState({ pixel: 0 }), 500);
   }
 
   componentWillUnmount() {}
@@ -56,19 +61,36 @@ moveto(){
       alignItems: "center",
       backgroundColor: "white",
       paddingTop: this.state.pixel
-    }
+    };
 
     return (
       <View style={containerstyle}>
         <MapView
-          ref={node => {this.map = node}}
+          ref={node => {
+            this.map = node;
+          }}
           style={styles.map}
           showsUserLocation={true}
           showsMyLocationButton={true}
           region={this.state.region}
           customMapStyle={mapStyle}
         >
-          <Marker />
+          {Coords.map(marker => (
+            <MapView.Marker
+              key={marker.key}
+              anchor={{
+                x: 0.5,
+                y: 0.5
+              }}
+              coordinate={{
+                latitude: Number(marker.latitude),
+                longitude: Number(marker.longitude)
+              }}
+              title={`Incidents:${marker.amount}`}
+            >
+              <View style={decide(marker.amount)} />
+            </MapView.Marker>
+          ))}
         </MapView>
         <View style={styles.btncontainer}>
           <TouchableHighlight
@@ -84,6 +106,21 @@ moveto(){
     );
   }
 }
+
+const decide = amount => {
+  if (amount === 2) {
+    return styles.low;
+  }
+  if (amount > 2 && amount <= 4) {
+    return styles.mid;
+  }
+  if (amount === 5) {
+    return styles.high;
+  }
+  if (amount >= 6) {
+    return styles.dangerous;
+  }
+};
 
 const mapStyle = [
   {
@@ -141,6 +178,61 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(16, 187, 240, 0.3)",
     borderWidth: 2,
     borderColor: "rgba(16, 187, 240, 0.7)",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  radius: {
+    height: 50,
+    width: 50,
+    borderRadius: 50 / 2,
+    overflow: "hidden",
+    backgroundColor: "rgba(255, 217, 0, 0.1)",
+    borderWidth: 8,
+    borderColor: "rgba(255, 217, 0, 0.05)",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  low: {
+    height: 16,
+    width: 16,
+    borderRadius: 16 / 2,
+    overflow: "hidden",
+    backgroundColor: "rgba(255, 0, 0, 0.5)",
+    borderWidth: 6,
+    borderColor: "rgba(255, 0, 0, 0.05)",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  mid: {
+    height: 21,
+    width: 21,
+    borderRadius: 21 / 2,
+    overflow: "hidden",
+    backgroundColor: "rgba(255, 0, 0, 0.5)",
+    borderWidth: 6,
+    borderColor: "rgba(255, 0, 0, 0.05)",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  high: {
+    height: 28,
+    width: 28,
+    borderRadius: 28 / 2,
+    overflow: "hidden",
+    backgroundColor: "rgba(255, 40, 0, 0.5)",
+    borderWidth: 8,
+    borderColor: "rgba(255, 0, 0, 0.05)",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  dangerous: {
+    height: 33,
+    width: 33,
+    borderRadius: 33 / 2,
+    overflow: "hidden",
+    backgroundColor: "rgba(255, 0, 0, 0.5)",
+    borderWidth: 8,
+    borderColor: "rgba(255, 0, 0, 0.05)",
     alignItems: "center",
     justifyContent: "center"
   }

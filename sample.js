@@ -1,5 +1,4 @@
-module.exports = {
-Coords: [
+const Coords = [
   {
     latitude: "50.9649760173953",
     longitude: "-114.071622300775",
@@ -409,4 +408,5 @@ Coords: [
     key: 195
   }
 ]
-}
+
+export default Coords 
