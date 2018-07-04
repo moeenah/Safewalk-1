@@ -6,13 +6,14 @@ import {
   TouchableHighlight,
   View
 } from "react-native";
-import MapView from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Marker from "./Marker";
 
 export default class PedMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      pixel:1,
       region: {
         latitude: this.props.lat,
         longitude: this.props.long,
@@ -42,24 +43,35 @@ moveto(){
   this.map.animateToRegion(this.state.region)
 }
 
-  componentDidMount() {
+// updateMap(){
+//   this.setState
+//   this.map.animateToRegion(this.state.region)
+// }
 
+  componentDidMount() {
+    setTimeout(()=>this.setState({pixel: 0}),500)
   }
 
   componentWillUnmount() {}
 
   render() {
+    const containerstyle = {
+      height: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "white",
+      paddingTop: this.state.pixel
+    }
+
     return (
-      <View style={styles.container}>
+      <View style={containerstyle}>
         <MapView
           ref={node => {this.map = node}}
           style={styles.map}
           showsUserLocation={true}
           showsMyLocationButton={true}
-          followsUserLocation={true}
           region={this.state.region}
           customMapStyle={mapStyle}
-          onPress={ ()=> this.moveto()}
         >
           <Marker />
         </MapView>
