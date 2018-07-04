@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { AppRegistry, View } from "react-native";
+import { AppRegistry, View, Vibration } from "react-native";
 import PedMap from "./app/components/PedMap";
 import Main from "./app/components/Main";
 import Coords from "./sample";
@@ -92,6 +92,7 @@ export default class Safewalk extends Component<Props> {
             alarm.reset();
           }
         });
+        Vibration.vibrate(5000)
       }
     });
   }
