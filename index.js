@@ -53,22 +53,23 @@ function getDistance(latitude1, longitude1, latitude2, longitude2, message) {
   return dist;
 }
 
-export default class Safewalk extends Component<Props> {
+export default class Safewalk extends Component<props> {
   constructor() {
     super();
     this.changePage = this.changePage.bind(this);
+    this.changeSettings = this.changeSettings.bind(this);
     this.test = this.test.bind(this);
     this.state = {
       lat: 51.05321,
       long: -114.09524,
       page: 0,
-      savedCoords: 0
+      savedCoords: 0,
+      vibrate: false,
+      sound: true
     };
   }
 
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>added function
-
-  
 
   test(userlat, userlong) {
     seenCoords = this.state.savedCoords;
@@ -79,22 +80,18 @@ export default class Safewalk extends Component<Props> {
         location.latitude,
         location.longitude
       );
-      const newCoords = (location.latitude + "," + location.longitude)
-      if (
-        distance < 30 && newCoords !== this.state.savedCoords
-      ) {
-        alarm.play(success => {
-          if (success) {
-            console.log(this.state.savedCoords)
-            this.setState({ savedCoords: newCoords },() => console.log(this.state.savedCoords));
-          } else {
-            console.log("playback failed due to audio decoding errors");
-            alarm.reset();
-          }
-        });
-        Vibration.vibrate(5000)
-      }
+      const newCoords = location.latitude + "," + location.longitude;
+      if (distance < 30 && newCoords !== this.state.savedCoords) {
+        if (this.state.sound === true) {
+          alarm.play();
+        }
+        if (this.state.vibrate === true) {
+          alert("VIBRATE LIKE CRAZY");
+          Vibration.vibrate(5000);
+        }
 
+        this.setState({ savedCoords: newCoords })
+      }
     });
   }
   //>>>>>>>>>>>>>>>>>>>>>>>>>>>>added function above
@@ -115,33 +112,73 @@ export default class Safewalk extends Component<Props> {
         lat={this.state.lat}
         long={this.state.long}
         page={this.state.page}
+        vibrate={this.state.vibrate}
+        sound={this.state.sound}
+        changeSettings={this.changeSettings}
         changePage={this.changePage}
       />
     );
   }
 
+  changeSettings() {
+    let setting = 0
+    if(this.state.sound === true && this.state.vibrate === true){
+      setting = 1
+    }
+    if(this.state.sound === false && this.state.vibrate === true){
+      setting = 2
+    }
+    if(this.state.sound === true && this.state.vibrate === false){
+      setting = 3
+    }
+    if(this.state.sound === false && this.state.vibrate === false){
+      setting = 4
+    }
+    switch(setting){
+    case 1:
+    this.setState({ sound: false });
+    this.setState({ vibrate: true });
+    break;
+    case 2:
+    this.setState({ sound: true });
+    this.setState({ vibrate: false });
+    break;
+    case 3:
+    this.setState({ sound: false });
+    this.setState({ vibrate: false });
+    break;
+    case 4:
+    this.setState({ sound: true });
+    this.setState({ vibrate: true });
+    break;
+    }
+  }
+
   changePage(newpage) {
     this.setState({ page: newpage });
   }
+  
 
   componentDidMount() {
-    this.watchId = navigator.geolocation.watchPosition(
-      position => {
-        this.setState({
-          lat: position.coords.latitude,
-          long: position.coords.longitude,
-          error: null
-        });
-        this.test(position.coords.latitude, position.coords.longitude);
-      },
-      error => this.setState({ error: error.message }),
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 1000,
-        distanceFilter: 10
-      }
-    );
+    if (this.state.sound === true || this.state.vibrate === true) {
+      this.watchId = navigator.geolocation.watchPosition(
+        position => {
+          this.setState({
+            lat: position.coords.latitude,
+            long: position.coords.longitude,
+            error: null
+          });
+          this.test(position.coords.latitude, position.coords.longitude);
+        },
+        error => this.setState({ error: error.message }),
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 1000,
+          distanceFilter: 5
+        }
+      );
+    }
   }
 
   componentWillUnmount() {
