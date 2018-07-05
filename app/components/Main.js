@@ -75,8 +75,6 @@ export default class Main extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    bottom: 0,
-    paddingTop: 60,
     alignItems: "center"
   },
   button: {

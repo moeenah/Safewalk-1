@@ -65,7 +65,8 @@ export default class Safewalk extends Component<props> {
       page: 0,
       savedCoords: 0,
       vibrate: false,
-      sound: true
+      sound: false,
+      distance: 5
     };
   }
 
@@ -90,7 +91,7 @@ export default class Safewalk extends Component<props> {
           Vibration.vibrate(5000);
         }
 
-        this.setState({ savedCoords: newCoords })
+        this.setState({ savedCoords: newCoords });
       }
     });
   }
@@ -121,46 +122,50 @@ export default class Safewalk extends Component<props> {
   }
 
   changeSettings() {
-    let setting = 0
-    if(this.state.sound === true && this.state.vibrate === true){
-      setting = 1
+    let setting = 0;
+    if (this.state.sound === true && this.state.vibrate === true) {
+      setting = 1;
     }
-    if(this.state.sound === false && this.state.vibrate === true){
-      setting = 2
+    if (this.state.sound === false && this.state.vibrate === true) {
+      setting = 2;
     }
-    if(this.state.sound === true && this.state.vibrate === false){
-      setting = 3
+    if (this.state.sound === true && this.state.vibrate === false) {
+      setting = 3;
     }
-    if(this.state.sound === false && this.state.vibrate === false){
-      setting = 4
+    if (this.state.sound === false && this.state.vibrate === false) {
+      setting = 4;
     }
-    switch(setting){
-    case 1:
-    this.setState({ sound: false });
-    this.setState({ vibrate: true });
-    break;
-    case 2:
-    this.setState({ sound: true });
-    this.setState({ vibrate: false });
-    break;
-    case 3:
-    this.setState({ sound: false });
-    this.setState({ vibrate: false });
-    break;
-    case 4:
-    this.setState({ sound: true });
-    this.setState({ vibrate: true });
-    break;
+    switch (setting) {
+      case 1:
+        this.setState({ sound: false });
+        this.setState({ vibrate: true });
+        this.setState({ distance: 5 });
+        break;
+      case 2:
+        this.setState({ sound: true });
+        this.setState({ vibrate: false });
+        this.setState({ distance: 5 });
+        break;
+      case 3:
+        this.setState({ sound: false });
+        this.setState({ vibrate: false });
+        this.setState({ distance: 99999999 });
+        break;
+      case 4:
+        this.setState({ sound: true });
+        this.setState({ vibrate: true });
+        this.setState({ distance: 5 });
+        break;
     }
   }
 
   changePage(newpage) {
     this.setState({ page: newpage });
   }
-  
+
 
   componentDidMount() {
-    if (this.state.sound === true || this.state.vibrate === true) {
+    
       this.watchId = navigator.geolocation.watchPosition(
         position => {
           this.setState({
@@ -175,10 +180,10 @@ export default class Safewalk extends Component<props> {
           enableHighAccuracy: true,
           timeout: 20000,
           maximumAge: 1000,
-          distanceFilter: 5
+          distanceFilter: this.state.distance
         }
       );
-    }
+   
   }
 
   componentWillUnmount() {
